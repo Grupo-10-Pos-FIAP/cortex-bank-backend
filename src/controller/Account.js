@@ -124,6 +124,19 @@ class AccountController {
       }
     })
   }
+
+  async getTransaction(req, res) {
+    const { getTransaction, transactionRepository } = this.di
+    const { id } = req.params
+    const transaction = await getTransaction({ filter: { _id: id }, repository: transactionRepository })
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transação não encontrada' })
+    }
+    res.status(200).json({
+      message: 'Transação encontrada com sucesso',
+      result: new DetailedAccountModel(transaction)
+    })
+  }
 }
 
 module.exports = AccountController

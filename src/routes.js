@@ -104,6 +104,30 @@ router.put('/account/transaction/:id', accountController.updateTransaction.bind(
  */
 router.delete('/account/transaction/:id', accountController.deleteTransaction.bind(accountController))
 
+
+/**
+ * @swagger
+ * /account/transaction/{id}:
+ *   get:
+ *     summary: Obtém transação por ID
+ *     tags: [Transações]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID da transação
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Transação encontrada com sucesso
+ *       401:
+ *         description: Token invalido ou transação não encontrada
+ */
+router.get('/account/transaction/:id', accountController.getTransaction.bind(accountController))
+
 /**
  * @swagger
  * /account/{accountId}/statement:
