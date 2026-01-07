@@ -7,12 +7,38 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerDocs =  require('./swagger')
 const UserController = require('./controller/User')
 const cors = require('cors')
+const cookieParser = require('cookie-parser')
 
 app.use(Express.json())
+app.use(cookieParser())
 
-app.use(cors({
-    origin: '*'
-}))
+// Configuração do CORS para suportar cookies em microfrontends
+const corsOptions = {
+    credentials: true, // Permite cookies em requisições cross-origin
+    origin: function (origin, callback) {
+        // Em desenvolvimento, permite todas as origens
+        // Em produção, use a variável CORS_ORIGIN com múltiplas origens separadas por vírgula
+        console.log("haaaaa");
+        console.log(process.env.NODE_ENV);
+        console.log(process.env.CORS_ORIGIN);
+        console.log("haaaaa");console.log("haaaaa");console.log("haaaaa");
+        if (process.env.NODE_ENV !== 'production') {
+            return callback(null, true)
+        }
+        
+        const allowedOrigins = process.env.CORS_ORIGIN 
+            ? process.env.CORS_ORIGIN.split(',') 
+            : []
+        
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    }
+}
+
+app.use(cors(corsOptions))
 
 app.use(publicRoutes)
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -20,8 +46,12 @@ app.use((req, res, next) => {
     if (req.url.includes('/docs')) {
         return next();
     }
+    // Tenta obter o token do header Authorization ou do cookie
     const [_, token] = req.headers['authorization']?.split(' ') || []
-    const user = UserController.getToken(token)
+    const cookieToken = req.cookies?.token
+    const tokenToVerify = token || cookieToken
+    
+    const user = UserController.getToken(tokenToVerify)
     if (!user) return res.status(401).json({ message: 'Token inválido' })
     req.user = user
     next()

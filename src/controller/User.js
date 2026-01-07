@@ -77,10 +77,22 @@ class UserController {
     
     if (!user?.[0]) return res.status(401).json({ message: 'Usuário não encontrado' })
     const userToTokenize = {...user[0], id: user[0].id.toString()}
+    const token = jwt.sign(userToTokenize, JWT_SECRET, { expiresIn: '12h' })
+    
+    // Define o token no cookie para os microfrontends
+    const isProduction = process.env.NODE_ENV === 'production'
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: isProduction, // Apenas HTTPS em produção
+      sameSite: isProduction ? 'none' : 'lax', // 'none' permite cross-site em produção
+      maxAge: 12 * 60 * 60 * 1000, // 12 horas em milissegundos
+      path: '/'
+    })
+    
     res.status(200).json({
       message: 'Usuário autenticado com sucesso',
       result: {
-        token: jwt.sign(userToTokenize, JWT_SECRET, { expiresIn: '12h' })
+        token: token // Mantém no body para compatibilidade
       }
     })
   }
