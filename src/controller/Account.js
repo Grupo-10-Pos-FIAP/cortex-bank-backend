@@ -1,4 +1,4 @@
-const TransactionDTO = require('../models/DetailedAccount')
+const DetailedAccountModel = require('../models/DetailedAccount')
 
 
 class AccountController {
@@ -51,9 +51,9 @@ class AccountController {
     const { saveTransaction, transactionRepository } = this.di
     const { accountId, value, type, from, to, anexo } = req.body
     const urlAnexo = req.body.urlAnexo ?? req.body.urlanexo ?? null
-    const transactionDTO = new TransactionDTO({ accountId, value, from, to, anexo, urlAnexo, type, date: new Date() })
+    const detailedAccount = new DetailedAccountModel({ accountId, value, from, to, anexo, urlAnexo, type, date: new Date() })
 
-    const transaction = await saveTransaction({ transaction: transactionDTO, repository: transactionRepository })
+    const transaction = await saveTransaction({ transaction: detailedAccount, repository: transactionRepository })
     
     res.status(201).json({
       message: 'Transação criada com sucesso',
@@ -128,13 +128,13 @@ class AccountController {
   async getTransaction(req, res) {
     const { getTransaction, transactionRepository } = this.di
     const { id } = req.params
-    const transaction = await getTransaction({ filter: { _id: id }, repository: transactionRepository })
-    if (!transaction) {
+    const transactions = await getTransaction({ filter: { _id: id }, repository: transactionRepository })
+    if (!transactions || transactions.length === 0) {
       return res.status(404).json({ message: 'Transação não encontrada' })
     }
     res.status(200).json({
       message: 'Transação encontrada com sucesso',
-      result: new DetailedAccountModel(transaction)
+      result: transactions[0]
     })
   }
 }

@@ -18,10 +18,6 @@ const corsOptions = {
     origin: function (origin, callback) {
         // Em desenvolvimento, permite todas as origens
         // Em produção, use a variável CORS_ORIGIN com múltiplas origens separadas por vírgula
-        console.log("haaaaa");
-        console.log(process.env.NODE_ENV);
-        console.log(process.env.CORS_ORIGIN);
-        console.log("haaaaa");console.log("haaaaa");console.log("haaaaa");
         if (process.env.NODE_ENV !== 'production') {
             return callback(null, true)
         }
