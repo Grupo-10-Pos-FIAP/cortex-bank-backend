@@ -5,6 +5,25 @@ const userController = new UserController({})
 const router = Router()
 
 /**
+ * Health check endpoint para monitoramento e deploy
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check da aplicação
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Aplicação está funcionando
+ */
+router.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    service: 'cortex-bank-backend'
+  });
+})
+
+/**
  * @swagger
  * /user:
  *   get:
