@@ -1,0 +1,60 @@
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentação
+README.md
+readme
+*.md
+
+# Testes
+tests/
+coverage/
+.nyc_output/
+*.test.js
+*.spec.js
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos de sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# Arquivos temporários
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# Imagens e assets desnecessários
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+
+# Postman collections (opcional, mantenha se precisar)
+# tech-challenge-2.postman_collection.json
