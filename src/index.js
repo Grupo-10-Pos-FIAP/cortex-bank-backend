@@ -48,8 +48,21 @@ const corsOptions = {
     optionsSuccessStatus: 204
 }
 
+// Middleware de log para TODAS as requisições (incluindo OPTIONS)
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`, {
+        origin: req.headers.origin,
+        'access-control-request-method': req.headers['access-control-request-method'],
+        'access-control-request-headers': req.headers['access-control-request-headers']
+    })
+    next()
+})
+
 // CORS deve ser o PRIMEIRO middleware
 app.use(cors(corsOptions))
+
+// Handler explícito para OPTIONS (preflight)
+app.options('*', cors(corsOptions))
 
 app.use(Express.json())
 app.use(cookieParser())
