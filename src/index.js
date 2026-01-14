@@ -22,16 +22,31 @@ const corsOptions = {
             return callback(null, true)
         }
         
+        // Requisições sem origin (mesmo domínio, Postman, etc) são permitidas
+        if (!origin) {
+            return callback(null, true)
+        }
+        
         const allowedOrigins = process.env.CORS_ORIGIN 
-            ? process.env.CORS_ORIGIN.split(',') 
+            ? process.env.CORS_ORIGIN.split(',').map(o => o.trim()).filter(o => o.length > 0)
             : []
         
-        if (!origin || allowedOrigins.includes(origin)) {
+        // Verifica se a origem está na lista permitida
+        if (allowedOrigins.includes(origin)) {
             callback(null, true)
         } else {
+            // Log para debug
+            console.log('CORS blocked:', {
+                origin: origin,
+                allowedOrigins: allowedOrigins,
+                corsOriginEnv: process.env.CORS_ORIGIN
+            })
             callback(new Error('Not allowed by CORS'))
         }
-    }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Type']
 }
 
 app.use(cors(corsOptions))
