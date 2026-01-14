@@ -32,12 +32,6 @@ const corsOptions = {
         if (allowedOrigins.includes(origin)) {
             callback(null, true)
         } else {
-            // Log para debug
-            console.log('CORS blocked:', {
-                origin: origin,
-                allowedOrigins: allowedOrigins,
-                corsOriginEnv: process.env.CORS_ORIGIN
-            })
             callback(new Error('Not allowed by CORS'))
         }
     },
@@ -47,16 +41,6 @@ const corsOptions = {
     preflightContinue: false,
     optionsSuccessStatus: 204
 }
-
-// Middleware de log para TODAS as requisições (incluindo OPTIONS)
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`, {
-        origin: req.headers.origin,
-        'access-control-request-method': req.headers['access-control-request-method'],
-        'access-control-request-headers': req.headers['access-control-request-headers']
-    })
-    next()
-})
 
 // CORS deve ser o PRIMEIRO middleware
 app.use(cors(corsOptions))

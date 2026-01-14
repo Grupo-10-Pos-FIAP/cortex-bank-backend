@@ -49,7 +49,7 @@ class UserController {
         result: userCreated,
       })
     } catch (error) {
-      console.log(error)
+      console.error('Erro ao criar usuário:', error)
       res.status(500).json({ message: 'caiu a aplicação' })
     }
 
