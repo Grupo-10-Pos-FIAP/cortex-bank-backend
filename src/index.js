@@ -9,10 +9,7 @@ const UserController = require('./controller/User')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 
-app.use(Express.json())
-app.use(cookieParser())
-
-// Configuração do CORS para suportar cookies em microfrontends
+// Configuração do CORS PRIMEIRO - antes de qualquer outro middleware
 const corsOptions = {
     credentials: true, // Permite cookies em requisições cross-origin
     origin: function (origin, callback) {
@@ -44,12 +41,18 @@ const corsOptions = {
             callback(new Error('Not allowed by CORS'))
         }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    exposedHeaders: ['Content-Type']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    exposedHeaders: ['Content-Type'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }
 
+// CORS deve ser o PRIMEIRO middleware
 app.use(cors(corsOptions))
+
+app.use(Express.json())
+app.use(cookieParser())
 
 app.use(publicRoutes)
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
