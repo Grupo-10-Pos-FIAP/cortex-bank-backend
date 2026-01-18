@@ -218,6 +218,6 @@ router.patch('/account/transaction/:id/complete', accountController.completeTran
  *       401:
  *         description: Token invalido
  */
-router.get('/account/:accountId/statement', accountController.getStatment.bind(accountController))
+router.get('/account/:accountId/statement', accountController.getStatement.bind(accountController))
 
 module.exports = router

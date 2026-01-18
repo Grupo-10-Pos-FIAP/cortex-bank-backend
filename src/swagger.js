@@ -15,12 +15,11 @@ const options = {
           scheme: 'bearer',
           bearerFormat: 'JWT',
         }
-    
       }
     },
     security: [
       {
-        BearerAuth: [], // Define que toda rota utilizará este esquema como padrão
+        bearerAuth: [],
       },
     ],
     servers: [
