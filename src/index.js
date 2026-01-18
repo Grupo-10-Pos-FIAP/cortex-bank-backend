@@ -9,17 +9,13 @@ const UserController = require('./controller/User')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 
-// Configuração do CORS PRIMEIRO - antes de qualquer outro middleware
 const corsOptions = {
-    credentials: true, // Permite cookies em requisições cross-origin
+    credentials: true,
     origin: function (origin, callback) {
-        // Em desenvolvimento, permite todas as origens
-        // Em produção, use a variável CORS_ORIGIN com múltiplas origens separadas por vírgula
         if (process.env.NODE_ENV !== 'production') {
             return callback(null, true)
         }
         
-        // Requisições sem origin (mesmo domínio, Postman, etc) são permitidas
         if (!origin) {
             return callback(null, true)
         }
@@ -28,7 +24,6 @@ const corsOptions = {
             ? process.env.CORS_ORIGIN.split(',').map(o => o.trim()).filter(o => o.length > 0)
             : []
         
-        // Verifica se a origem está na lista permitida
         if (allowedOrigins.includes(origin)) {
             callback(null, true)
         } else {
@@ -42,10 +37,8 @@ const corsOptions = {
     optionsSuccessStatus: 204
 }
 
-// CORS deve ser o PRIMEIRO middleware
 app.use(cors(corsOptions))
 
-// Handler explícito para OPTIONS (preflight)
 app.options('*', cors(corsOptions))
 
 app.use(Express.json())
@@ -57,7 +50,6 @@ app.use((req, res, next) => {
     if (req.url.includes('/docs')) {
         return next();
     }
-    // Tenta obter o token do header Authorization ou do cookie
     const [_, token] = req.headers['authorization']?.split(' ') || []
     const cookieToken = req.cookies?.token
     const tokenToVerify = token || cookieToken
