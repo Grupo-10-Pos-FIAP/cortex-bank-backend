@@ -2,7 +2,7 @@ const userDTO = require('../models/User')
 const accountDTO = require('../models/Account')
 const cardDTO = require('../models/Card')
 const jwt = require('jsonwebtoken')
-const JWT_SECRET = 'tech-challenge'
+const JWT_SECRET = process.env.JWT_SECRET || 'tech-challenge'
 
 class UserController {
   constructor(di = {}) {
@@ -22,7 +22,9 @@ class UserController {
     const user = new userDTO(req.body)
     const { userRepository, accountRepository, cardRepository, salvarUsuario, saveAccount, saveCard } = this.di
 
-    if (!user.isValid()) return res.status(400).json({ 'message': 'não houve informações enviadas' })
+    if (!user.isValid()) {
+      return res.status(400).json({ message: 'Dados inválidos: username, email e password são obrigatórios' })
+    }
     try {
       const userCreated = await salvarUsuario({
         user, repository: userRepository
@@ -32,80 +34,89 @@ class UserController {
 
       const firstCard = new cardDTO({ 
         type: 'GOLD',
-        number: 13748712374891010 ,
+        number: 13748712374891010,
         dueDate: '2027-01-07',
         functions: 'Debit',
         cvc: '505',
         paymentDate: null,
         name: userCreated.username,
-        accountId: accountCreated.id,
-        type: 'Debit' 
+        accountId: accountCreated.id
       })
 
-      const cardCreated = await saveCard({ card: firstCard, repository: cardRepository })
+      await saveCard({ card: firstCard, repository: cardRepository })
 
       res.status(201).json({
-        message: 'usuário criado com sucesso',
+        message: 'Usuário criado com sucesso',
         result: userCreated,
       })
     } catch (error) {
       console.error('Erro ao criar usuário:', error)
-      res.status(500).json({ message: 'caiu a aplicação' })
+      res.status(500).json({ message: 'Erro ao criar usuário' })
     }
 
   }
   async find(req, res) {
-
     const { userRepository, getUser } = this.di
     try {
       const users = await getUser({ repository: userRepository })
       res.status(200).json({
-        message: 'Usuário carregado com sucesso',
+        message: 'Usuários carregados com sucesso',
         result: users
       })
     } catch (error) {
+      console.error('Erro ao buscar usuários:', error)
       res.status(500).json({
-        message: 'Erro no servidor'
+        message: 'Erro ao buscar usuários'
       })
     }
-    
   }
   async auth(req, res) {
     const { userRepository, getUser } = this.di
     const { email, password } = req.body
-    const user = await getUser({ repository: userRepository, userFilter: { email, password } })
     
-    if (!user?.[0]) return res.status(401).json({ message: 'Usuário não encontrado' })
-    const userToTokenize = {...user[0], id: user[0].id.toString()}
-    const token = jwt.sign(userToTokenize, JWT_SECRET, { expiresIn: '12h' })
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email e senha são obrigatórios' })
+    }
     
-    // Define o token no cookie para os microfrontends
-    const isProduction = process.env.NODE_ENV === 'production'
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: isProduction, // Apenas HTTPS em produção
-      sameSite: isProduction ? 'none' : 'lax', // 'none' permite cross-site em produção
-      maxAge: 12 * 60 * 60 * 1000, // 12 horas em milissegundos
-      path: '/'
-    })
-    
-    res.status(200).json({
-      message: 'Usuário autenticado com sucesso',
-      result: {
-        token: token // Mantém no body para compatibilidade
+    try {
+      const user = await getUser({ repository: userRepository, userFilter: { email, password } })
+      
+      if (!user?.[0]) {
+        return res.status(401).json({ message: 'Credenciais inválidas' })
       }
-    })
+      
+      const userToTokenize = { ...user[0], id: user[0].id.toString() }
+      const token = jwt.sign(userToTokenize, JWT_SECRET, { expiresIn: '12h' })
+    
+      // Define o token no cookie para os microfrontends
+      const isProduction = process.env.NODE_ENV === 'production'
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
+        maxAge: 12 * 60 * 60 * 1000, // 12 horas em milissegundos
+        path: '/'
+      })
+      
+      res.status(200).json({
+        message: 'Usuário autenticado com sucesso',
+        result: {
+          token
+        }
+      })
+    } catch (error) {
+      console.error('Erro ao autenticar usuário:', error)
+      res.status(500).json({ message: 'Erro ao autenticar usuário' })
+    }
   }
   static getToken(token) {
     try {
-        const decoded = jwt.verify(token, JWT_SECRET)
-        return decoded
+      const decoded = jwt.verify(token, JWT_SECRET)
+      return decoded
     } catch (error) {
-        return null
+      return null
     }
   }
 }
-
-
 
 module.exports = UserController
