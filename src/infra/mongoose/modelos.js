@@ -81,6 +81,11 @@ const DetailedAccountSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Account',
     required: true
+  },
+  status: {
+    type: String,
+    enum: ['Pending', 'Done'],
+    default: 'Pending'
   }
 }, { timestamps: true });
 

@@ -49,9 +49,13 @@ class AccountController {
 
   async createTransaction(req, res) {
     const { saveTransaction, transactionRepository } = this.di
-    const { accountId, value, type, from, to, anexo } = req.body
+    const { accountId, value, type, from, to, anexo, status } = req.body
     const urlAnexo = req.body.urlAnexo ?? req.body.urlanexo ?? null
-    const detailedAccount = new DetailedAccountModel({ accountId, value, from, to, anexo, urlAnexo, type, date: new Date() })
+    const transactionData = { accountId, value, from, to, anexo, urlAnexo, type, date: new Date() }
+    if (status) {
+      transactionData.status = status
+    }
+    const detailedAccount = new DetailedAccountModel(transactionData)
 
     const transaction = await saveTransaction({ transaction: detailedAccount, repository: transactionRepository })
     
@@ -64,7 +68,7 @@ class AccountController {
   async updateTransaction(req, res) {
     const { updateTransaction, transactionRepository } = this.di
     const { id } = req.params
-    const { value, type, from, to, anexo } = req.body
+    const { value, type, from, to, anexo, status } = req.body
     const urlAnexo = req.body.urlAnexo ?? req.body.urlanexo
 
     const updates = {
@@ -73,7 +77,8 @@ class AccountController {
       from,
       to,
       anexo,
-      urlAnexo
+      urlAnexo,
+      status
     }
 
     Object.keys(updates).forEach((key) => updates[key] === undefined && delete updates[key])
@@ -136,6 +141,30 @@ class AccountController {
       message: 'Transação encontrada com sucesso',
       result: transactions[0]
     })
+  }
+
+  async completeTransaction(req, res) {
+    const { updateTransaction, transactionRepository } = this.di
+    const { id } = req.params
+
+    try {
+      const transaction = await updateTransaction({ 
+        transactionId: id, 
+        updates: { status: 'Done' }, 
+        repository: transactionRepository 
+      })
+
+      if (!transaction) {
+        return res.status(404).json({ message: 'Transação não encontrada' })
+      }
+
+      res.status(200).json({
+        message: 'Transação marcada como concluída com sucesso',
+        result: transaction
+      })
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao marcar transação como concluída' })
+    }
   }
 }
 

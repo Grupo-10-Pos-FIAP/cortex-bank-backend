@@ -1,6 +1,6 @@
 class DetailedAccount {
     constructor({
-        _id, type, value, from, to, date, accountId, anexo, urlAnexo
+        _id, type, value, from, to, date, accountId, anexo, urlAnexo, status
     }) {
         this.id =_id
         this.accountId = accountId
@@ -11,6 +11,7 @@ class DetailedAccount {
         this.date = date
         this.anexo = anexo
         this.urlAnexo = urlAnexo
+        this.status = status || 'Pending'
     }
 }
 

@@ -48,9 +48,22 @@ router.get('/account', accountController.find.bind(accountController))
  *               urlAnexo:
  *                 type: string
  *                 description: URL do anexo armazenado
+ *               status:
+ *                 type: string
+ *                 enum: [Pending, Done]
+ *                 description: Status da transação (default: Pending)
  *     responses:
  *       201:
  *         description: Transação criada com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   enum: [Pending, Done]
+ *                   description: Status da transação
  */
 router.post('/account/transaction', accountController.createTransaction.bind(accountController))
 
@@ -74,6 +87,24 @@ router.post('/account/transaction', accountController.createTransaction.bind(acc
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               value:
+ *                 type: number
+ *               type:
+ *                 type: string
+ *                 enum: [Debit, Credit]
+ *               from:
+ *                 type: string
+ *               to:
+ *                 type: string
+ *               anexo:
+ *                 type: string
+ *               urlAnexo:
+ *                 type: string
+ *               status:
+ *                 type: string
+ *                 enum: [Pending, Done]
+ *                 description: Status da transação
  *     responses:
  *       200:
  *         description: Transação atualizada com sucesso
@@ -127,6 +158,44 @@ router.delete('/account/transaction/:id', accountController.deleteTransaction.bi
  *         description: Token invalido ou transação não encontrada
  */
 router.get('/account/transaction/:id', accountController.getTransaction.bind(accountController))
+
+/**
+ * @swagger
+ * /account/transaction/{id}/complete:
+ *   patch:
+ *     summary: Marca uma transação como concluída
+ *     tags: [Transações]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID da transação
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Transação marcada como concluída com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 result:
+ *                   type: object
+ *                   properties:
+ *                     status:
+ *                       type: string
+ *                       enum: [Done]
+ *       404:
+ *         description: Transação não encontrada
+ *       500:
+ *         description: Erro ao marcar transação como concluída
+ */
+router.patch('/account/transaction/:id/complete', accountController.completeTransaction.bind(accountController))
 
 /**
  * @swagger

@@ -90,7 +90,8 @@ describe('Financial manager API', () => {
       accountId,
       type: 'Debit',
       anexo: payload.anexo,
-      urlAnexo: payload.urlAnexo
+      urlAnexo: payload.urlAnexo,
+      status: 'Pending'
     })
     expect(response.body.result.value).toBeLessThan(0)
 
