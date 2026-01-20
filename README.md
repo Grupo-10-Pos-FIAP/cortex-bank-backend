@@ -1,6 +1,6 @@
 # Cortex Bank - Backend API
 
-## 📋 Sobre o Projeto
+## Sobre o Projeto
 
 Este projeto é uma API REST desenvolvida em Node.js para gerenciamento financeiro (Cortex Bank). 
 
@@ -17,7 +17,7 @@ Este projeto é uma API REST desenvolvida em Node.js para gerenciamento financei
 - Testes automatizados
 - Containerização com Docker
 
-## 🚀 Ambiente de Produção
+## Ambiente de Produção
 
 A aplicação está atualmente hospedada em produção utilizando:
 - **Coolify**: Plataforma de deploy e gerenciamento de containers
@@ -30,7 +30,7 @@ A aplicação está atualmente hospedada em produção utilizando:
 - Isso garante maior segurança e evita exposição acidental de credenciais no repositório
 - O banco de dados MongoDB está hospedado no **MongoDB Cloud (Atlas)**, garantindo alta disponibilidade, backups automáticos e escalabilidade
 
-## 🔧 Variáveis de Ambiente
+## Variáveis de Ambiente
 
 A aplicação utiliza as seguintes variáveis de ambiente:
 
@@ -62,9 +62,9 @@ Configure todas as variáveis diretamente na plataforma Coolify através da inte
 ## 📦 Instalação e Execução
 
 ### Pré-requisitos
-- Node.js (versão 18 ou superior)
+
+- Node.js (versão 22 ou superior)
 - MongoDB (local ou remoto)
-- npm ou pnpm
 
 ### Instalação Local
 
@@ -119,7 +119,7 @@ docker run -p 3000:3000 \
   cortex-bank-backend-dev
 ```
 
-## 🧪 Testes
+## Testes
 
 Para executar os testes:
 
@@ -129,7 +129,7 @@ npm test
 
 Os testes utilizam MongoDB em memória (MongoMemoryServer) e não requerem uma instância real do banco de dados.
 
-## 📚 Documentação da API
+## Documentação da API
 
 ### Swagger
 
@@ -151,10 +151,10 @@ O projeto inclui uma collection do Postman para facilitar os testes da API:
 - Arquivo: `tech-challenge-2.postman_collection.json`
 - Para importar: Abra o Postman, clique em "Import", selecione o arquivo e importe a collection
 
-![Import Postman](image.png)
-![Postman Collection](image-1.png)
+![Import Postman](assets/image.png)
+![Postman Collection](assets/image-1.png)
 
-## 🔐 Autenticação
+## Autenticação
 
 A API utiliza autenticação baseada em JWT (JSON Web Tokens). Todas as rotas protegidas requerem um token Bearer no header `Authorization`.
 
@@ -212,7 +212,7 @@ curl --location 'http://localhost:3000/user/auth' \
 
 **⚠️ Importante:** Use este token no header `Authorization` como `Bearer {token}` para acessar as rotas protegidas.
 
-## 💳 Conta
+## Conta
 
 ### Buscar Conta
 
@@ -387,7 +387,7 @@ backend/
 └── package.json            # Dependências do projeto
 ```
 
-## 🔒 Segurança
+## Segurança
 
 - ✅ Autenticação JWT para rotas protegidas
 - ✅ CORS configurado para produção com origens específicas
@@ -395,10 +395,11 @@ backend/
 - ✅ Container Docker com usuário não-root
 - ✅ Validação de tokens em todas as rotas protegidas
 
-## 📝 Licença
+## Licença
 
-ISC
+Este projeto foi desenvolvido como parte do trabalho de pós-graduação em Engenharia de Software Frontend.
 
-## 👤 Autor
+## Autores
 
-Adaptado e melhorado a partir do projeto base da pós-graduação em Engenharia de Software Front End.
+- [Gabrielle Martins](https://github.com/Gabrielle-96)
+- [Helen Cris](https://github.com/HelenCrisM)
