@@ -8,7 +8,7 @@ async function connectDB() {
     if (process.env.NODE_ENV === 'test') {
       mongod = await MongoMemoryServer.create({
         binary: {
-          version: '4.4.18' // última sem AVX
+          version: '4.4.18'
         }
       });
 

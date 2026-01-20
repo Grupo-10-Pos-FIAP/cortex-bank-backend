@@ -94,7 +94,6 @@ class UserController {
       const userToTokenize = { ...user[0], id: user[0].id.toString() }
       const token = jwt.sign(userToTokenize, JWT_SECRET, { expiresIn: '12h' })
     
-      // Define o token no cookie para os microfrontends
       const isProduction = process.env.NODE_ENV === 'production'
       res.cookie('token', token, {
         httpOnly: true,

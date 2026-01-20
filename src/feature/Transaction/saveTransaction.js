@@ -6,7 +6,6 @@ const saveTransaction = async ({
   const shouldReverseValue = (transaction.type === 'Debit' && transaction.value > 0) || (transaction.type === 'Credit' && transaction.value < 0)
   if (shouldReverseValue) transaction.value = transaction.value * -1
   
-  // Converte o modelo de domínio para objeto simples para o repository
   const transactionData = {
     accountId: transaction.accountId,
     value: transaction.value,

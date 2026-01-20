@@ -124,7 +124,6 @@ const UserSchema = new Schema({
   }
 }, { timestamps: true });
 
-// Definindo as relações virtuais
 AccountSchema.virtual('cards', {
   ref: 'Card',
   localField: '_id',
@@ -149,7 +148,6 @@ UserSchema.virtual('accounts', {
   foreignField: 'userId'
 });
 
-// Configurando as opções para que os virtuals sejam incluídos quando converter para JSON
 const schemaOptions = {
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
@@ -158,7 +156,6 @@ const schemaOptions = {
 AccountSchema.set(schemaOptions);
 UserSchema.set(schemaOptions);
 
-// Criando os modelos
 const Card = mongoose.model('Card', CardSchema);
 const Account = mongoose.model('Account', AccountSchema);
 const DetailedAccount = mongoose.model('DetailedAccount', DetailedAccountSchema);
