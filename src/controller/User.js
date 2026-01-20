@@ -22,8 +22,14 @@ class UserController {
     const user = new userDTO(req.body)
     const { userRepository, accountRepository, cardRepository, salvarUsuario, saveAccount, saveCard } = this.di
 
-    if (!user.isValid()) {
-      return res.status(400).json({ message: 'Dados inválidos: username, email e password são obrigatórios' })
+    if (!user.username || !user.email || !user.password) {
+      return res.status(400).json({ message: 'Dados inválidos: username, email e/ou password são obrigatórios' })
+    }
+
+    if (!user.isPasswordStrong(user.password)) {
+      return res.status(400).json({ 
+        message: 'A senha deve ter pelo menos 8 caracteres, contendo pelo menos uma letra, um número e um caractere especial' 
+      })
     }
     try {
       const userCreated = await salvarUsuario({
